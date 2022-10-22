@@ -22,3 +22,13 @@ variable "key_pair" {
   type    = string
   default = "tf"
 }
+
+variable "ingressrules" {
+  type = list(number)
+  default = [ 80, 443, 8080, 22 ]
+}
+
+variable "egressrules" {
+  type = list(number)
+  default = [ 80, 443, 8080, 25, 3306, 53 ]
+}
