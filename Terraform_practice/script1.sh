@@ -1,46 +1,40 @@
 #!/bin/bash
+# below command download and install apache web server
 
-TOMURL="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.37/bin/apache-tomcat-8.5.37.tar.gz"
-sudo yum install java-1.8.0-openjdk -y
-sudo yum install git maven wget -y
-cd /tmp/
-wget $TOMURL -O tomcatbin.tar.gz
-EXTOUT=`tar xzvf tomcatbin.tar.gz`
-TOMDIR=`echo $EXTOUT | cut -d '/' -f1`
-useradd --shell /sbin/nologin tomcat
-rsync -avzh /tmp/$TOMDIR/ /usr/local/tomcat8/
-chown -R tomcat.tomcat /usr/local/tomcat8
+echo "#########################################"      
+echo "installing apached httpd, wget and unzip"       
+echo "#########################################"      
+sudo yum install wget unzip httpd -y > /dev/null      
+echo "starting apache httpd web server"
+echo "#########################################"      
+sudo systemctl start httpd
+echo "#########################################"      
+echo "enabling apache httpd web server"
+echo "#########################################"      
+sudo systemctl enable httpd
+echo "#########################################"      
+echo "checking apache httpd web server status"        
+echo "#########################################"      
+sudo systemctl status httpd
 
-sudo rm -rf /etc/systemd/system/tomcat.service
-
-cat <<EOT>> /etc/systemd/system/tomcat.service
-[Unit]
-Description=Tomcat
-After=network.target
-
-[Service]
-User=tomcat
-WorkingDirectory=/usr/local/tomcat8
-Environment=JRE_HOME=/usr/lib/jvm/jre
-Environment=JAVA_HOME=/usr/lib/jvm/jre
-Environment=CATALINA_HOME=/usr/local/tomcat8
-Environment=CATALINE_BASE=/usr/local/tomcat8
-ExecStart=/usr/local/tomcat8/bin/catalina.sh run
-ExecStop=/usr/local/tomcat8/bin/shutdown.sh
-SyslogIdentifier=tomcat-%i
-
-[Install]
-WantedBy=multi-user.target
-EOT
-
-sudo systemctl daemon-reload
-sudo systemctl start tomcat
-sudo systemctl enable tomcat
-
-cd /tmp/
-wget https://raw.githubusercontent.com/devopshydclub/vprofile-repo/master/tomcat-users.xml
-wget https://raw.githubusercontent.com/devopshydclub/vprofile-repo/master/context.xml
-cp tomcat-users.xml /usr/local/tomcat8/conf/tomcat-users.xml
-cp context.xml /usr/local/tomcat8/webapps/manager/META-INF/
-sudo systemctl restart tomcat
-echo "Done"
+# creating a dir for hosting web server in tmp dir    
+sudo mkdir /tmp/web
+cd /tmp/web
+# download website template from tooplate homepage    
+echo "#########################################"
+echo "downlaoding web templated from tooplate dir"
+echo "#########################################"
+sudo wget https://www.tooplate.com/zip-templates/2117_infinite_loop.zip
+# extract the files from the zip files
+echo "#########################################"
+echo "extracting the files into /tmp/web dir"
+echo "#########################################"
+sudo unzip 2117_infinite_loop.zip > /dev/null
+sudo rm -rf 2117_infinite_loop.zip
+# move the files from the /tmp/web dir to apache home dir
+sudo mv 2117_infinite_loop/* /var/www/html
+# restart apache web server
+echo "#########################################"
+echo "starting apache httpd web server"
+echo "#########################################"
+sudo systemctl restart httpd

@@ -6,12 +6,12 @@ resource "aws_security_group" "vpc-web-ssh" {
   dynamic "ingress" {
     iterator = port
     for_each = var.ingressrules
-    content{
-     from_port   = port.value
-     to_port     = port.value
-     protocol    = "tcp"
-     cidr_blocks = ["0.0.0.0/0"]
-    } 
+    content {
+      from_port   = port.value
+      to_port     = port.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
   /*
@@ -35,7 +35,7 @@ resource "aws_security_group" "vpc-web-ssh" {
   dynamic "egress" {
     iterator = port
     for_each = var.egressrules
-    content{
+    content {
       from_port   = port.value
       to_port     = port.value
       protocol    = "tcp"

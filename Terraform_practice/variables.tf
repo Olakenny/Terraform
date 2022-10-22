@@ -12,10 +12,24 @@ variable "region" {
 */
 
 
-variable "type_of_instance" {
+variable "instance_type_string" {
   description = "EC2 instance type"
   type        = string
   default     = "t2.micro"
+}
+
+variable "instance_type_list" {
+  type    = list(string)
+  default = ["t2.micro", "t2.small", "t2.medium"]
+}
+
+variable "instance_type_map" {
+  type = map(string)
+  default = {
+    "dev"  = "t2.micro"
+    "qa"   = "t2.small"
+    "prod" = "t2.medium"
+  }
 }
 
 variable "key_pair" {
@@ -24,11 +38,12 @@ variable "key_pair" {
 }
 
 variable "ingressrules" {
-  type = list(number)
-  default = [ 80, 443, 8080, 22 ]
+  type    = list(number)
+  default = [80, 443, 8080, 22]
 }
 
 variable "egressrules" {
-  type = list(number)
-  default = [ 80, 443, 8080, 25, 3306, 53 ]
+  type    = list(number)
+  default = [80, 443, 8080, 25, 3306, 53]
 }
+
